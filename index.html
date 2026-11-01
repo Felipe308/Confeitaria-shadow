@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Delegacia do Glacê — Donuts de Investigação</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--tape:#d4a017;--ink:#090909;--paper:#e8e2d4;--red:#c0392b;--red2:#e74c3c;--dim:#7a7060;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:var(--ink);color:var(--paper);font:15px/1.6 'Courier Prime','Courier New',monospace}body{display:flex;flex-direction:column}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:3px solid var(--tape);outline-offset:3px}
+.disp{font-family:Oswald,Impact,sans-serif;font-weight:600}
+#home{position:absolute;inset:0;overflow:hidden;cursor:crosshair;touch-action:none;background:radial-gradient(ellipse at 50% -10%,#3d1a1a,#0e0e0e 60%,#050505);transition:opacity .5s,visibility .5s}
+#home.off{opacity:0;visibility:hidden}
+#home::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,244,200,.3),transparent 75%);clip-path:polygon(44% 0,56% 0,82% 100%,18% 100%)}
+#home::after{content:"";position:absolute;left:0;right:0;bottom:0;height:30%;background:linear-gradient(180deg,transparent,rgba(180,186,210,.32))}
+.band{position:absolute;left:-5%;width:110%;bottom:19%;transform:rotate(-3deg);background:var(--tape);color:#111;white-space:nowrap;overflow:hidden;font-size:28px;line-height:1.5;letter-spacing:.08em;z-index:1}
+.it{position:absolute;left:0;top:44%;width:var(--s);height:var(--s);margin:calc(var(--s)/-2) 0 0 calc(var(--s)/-2);z-index:2;cursor:pointer;will-change:transform}
+:root{--s:min(30vmin,260px)}
+.it svg,.hero svg{width:100%;height:auto;display:block;filter:drop-shadow(0 20px 16px rgba(0,0,0,.45))}
+#lbl{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 7%);text-align:center;z-index:5;pointer-events:none}
+#lbl b{display:block;font-size:clamp(34px,6vw,64px);line-height:1;font-style:italic;text-shadow:0 3px 0 #000a}
+#lbl span{opacity:.8}
+#hint{position:absolute;top:12px;width:100%;text-align:center;font-size:14px;opacity:.65;z-index:5;pointer-events:none}
+#case{position:absolute;inset:0;display:grid;grid-template-columns:minmax(300px,34rem) 1fr 56px;grid-template-rows:minmax(0,1fr);gap:2vw;align-items:center;padding:24px 3vw 2vh;background:#333;transition:background-color .8s,opacity .6s,visibility .6s;opacity:0;visibility:hidden}
+#case.on{opacity:1;visibility:visible}
+#case::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 6% 94%,rgba(170,0,25,.4),transparent 16%),radial-gradient(circle at 96% 10%,rgba(170,0,25,.3),transparent 13%),radial-gradient(circle at 62% 55%,rgba(255,255,255,.1),transparent 55%),radial-gradient(ellipse at 50% 120%,rgba(0,0,0,.45),transparent 60%)}
+#case>*{position:relative}
+#back{position:absolute;top:12px;left:16px;z-index:40;background:var(--tape);color:#111;padding:6px 14px;transform:rotate(-2deg);display:none}
+#case.on~#back{display:block}
+.info{max-height:100%;overflow:auto;padding-right:10px;animation:rise .6s both}
+.info h2{font-size:clamp(52px,8vw,112px);line-height:.88;font-style:italic;margin:6px 0 10px;text-transform:uppercase}
+.sub{opacity:.85;margin-bottom:16px}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tabs button{background:rgba(0,0,0,.35);padding:5px 14px;border:2px solid var(--paper)}
+.tabs button[aria-selected=true]{background:var(--tape);color:#111;border-color:var(--tape)}
+.pan{display:none;max-width:62ch}.pan.on{display:block}
+.pan h3{font-size:22px;margin:14px 0 4px}
+.pan ol{padding-left:22px}.pan li{margin:4px 0}
+details{margin-top:14px;border-top:2px dashed #fff6;padding-top:10px}summary{cursor:pointer}
+.verd{margin-top:14px;border-left:6px solid var(--tape);padding-left:12px}
+.hero{display:grid;place-items:center;perspective:900px}
+.hero>div{width:min(64vmin,600px);transform:rotate(-16deg)}
+.hero.swap>div{animation:swap .8s cubic-bezier(.2,.8,.2,1) both}
+.hero svg{animation:fl 6s ease-in-out infinite}
+.dots{display:flex;flex-direction:column;gap:14px;align-items:center}
+.dots button{width:14px;height:14px;border-radius:50%;border:2px solid var(--paper);transition:transform .3s,background .3s}
+.dots button[aria-current=true]{background:var(--tape);border-color:var(--tape);transform:scale(1.5)}
+@keyframes fl{50%{transform:translateY(-14px) rotate(3deg)}}
+@keyframes swap{from{opacity:0;transform:translateY(60px) rotate(30deg) scale(.7);filter:blur(10px)}}
+@keyframes rise{from{opacity:0;transform:translateX(-24px)}}
+@media(max-width:800px){#case{grid-template-columns:1fr;grid-template-rows:34% minmax(0,1fr) auto;align-items:start;gap:8px;padding:48px 20px 12px}
+.hero{order:-1}.hero>div{width:min(52vw,32vh)}.info{max-height:none;height:100%}.dots{flex-direction:row;justify-content:center}.band{font-size:20px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+body::after{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.12) 2px,rgba(0,0,0,.12) 4px);pointer-events:none;z-index:9998}
+.alert{flex:none;background:rgba(192,57,43,.1);border-bottom:1px solid rgba(192,57,43,.25);padding:7px 0;overflow:hidden;white-space:nowrap}
+.alert span{display:inline-block;font:12px Oswald,sans-serif;letter-spacing:2px;color:var(--red2);animation:mq 40s linear infinite}
+@keyframes mq{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
+header{flex:none;position:relative;text-align:center;padding:14px 64px 12px;border-bottom:1px solid rgba(255,255,255,.05);background:radial-gradient(ellipse at 50% 0,rgba(192,57,43,.12),transparent 70%)}
+.eb{font:11px Oswald,sans-serif;letter-spacing:5px;color:var(--red);text-transform:uppercase}
+.ht{font:clamp(26px,4.5vw,44px)/1.05 'Special Elite',cursive}.ht em{color:var(--red);font-style:normal}
+.hs{font:300 12px Oswald,sans-serif;letter-spacing:4px;color:var(--dim);text-transform:uppercase}
+#hbtn{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:42px;height:42px;display:grid;place-content:center;gap:5px;border:1px solid rgba(255,255,255,.14)}
+#hbtn span{display:block;height:2px;width:20px;background:var(--paper)}
+#hm{display:none;position:absolute;left:16px;top:calc(50% + 28px);z-index:600;background:#111;border:1px solid rgba(255,255,255,.14);min-width:210px}
+#hm.open{display:block}
+#hm button{display:block;width:100%;text-align:left;padding:12px 16px;font:13px Oswald,sans-serif;letter-spacing:2px;border-bottom:1px solid rgba(255,255,255,.06)}
+#hm button:hover{background:rgba(255,255,255,.06)}
+nav.tabs{flex:none;display:flex;background:#111;border-bottom:1px solid rgba(255,255,255,.06)}
+.tbtn{flex:1;padding:13px 6px;font:12px Oswald,sans-serif;letter-spacing:3px;text-transform:uppercase;color:var(--dim);border-bottom:2px solid transparent;transition:color .2s}
+.tbtn.on{color:var(--paper);border-color:var(--red)}.tbtn:hover{color:var(--paper)}
+.panel{display:none;flex:1;min-height:0;position:relative;overflow:auto}.panel.on{display:block}#pnl-e{overflow:hidden}
+.wrap{max-width:860px;margin:0 auto;padding:28px 20px 60px}.wrap p{margin-bottom:12px;max-width:62ch}
+.pt{font-size:34px;margin-bottom:16px}.wrap h3{font-size:20px;margin:22px 0 6px}.wrap ol{padding-left:22px;margin-bottom:12px}
+.rc{border:1px solid rgba(255,255,255,.1);background:#141414;margin-bottom:10px;padding:12px 16px}
+.rc summary{display:flex;align-items:center;gap:14px;cursor:pointer}.rc summary b{display:block;font-size:22px}.rc summary small{color:var(--dim)}
+.th{width:56px;flex:none}.rc p,.rc ol{margin-top:10px}.rc ol{padding-left:22px}
+.lk{margin-top:12px;background:var(--red);padding:6px 14px;font:12px Oswald,sans-serif;letter-spacing:2px}
+.tabs{flex-wrap:wrap}.tbtn[hidden],#hm button[hidden]{display:none}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:10px 0}.gal img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+video{width:100%;max-width:640px;display:block;margin-top:10px}.dim{opacity:.65}.pan ul,.rc ul{padding-left:20px}
+.ph{position:relative}.ph button{position:absolute;top:4px;right:4px;background:#000c;padding:2px 8px}
+#pnl-a label{display:block;margin:12px 0;font:12px Oswald,sans-serif;letter-spacing:2px}
+#pnl-a input:not([type=color]):not([type=file]),#pnl-a textarea,#pnl-a select{width:100%;display:block;margin-top:4px;background:#0e0e0e;color:var(--paper);border:1px solid rgba(255,255,255,.18);padding:8px;font:15px 'Courier Prime',monospace}
+#pnl-a textarea{min-height:96px}
+nav.tabs button.tbtn{border:0;border-bottom:2px solid transparent;background:none;padding:13px 6px}nav.tabs button.tbtn.on{border-bottom-color:var(--red)}
+#case{padding-top:48px}
+#pnl-l label{display:block;margin:12px 0;font:12px Oswald,sans-serif;letter-spacing:2px}#pnl-l input{width:100%;max-width:360px;display:block;margin-top:4px;background:#0e0e0e;color:var(--paper);border:1px solid rgba(255,255,255,.18);padding:8px;font:15px 'Courier Prime',monospace}
+</style></head><body>
+<div class="alert"><span>⚠ CENA DO CRIME — NÃO ULTRAPASSE — DEZ CASOS ABERTOS — NENHUM DONUT É INOCENTE — TESTEMUNHAS EXIGEM CAFÉ — ⚠ CENA DO CRIME — NÃO ULTRAPASSE —</span></div>
+<header>
+<button id="hbtn" aria-label="Menu"><span></span><span></span><span></span></button>
+<div id="hm"><button data-go="e">Evidências</button><button data-go="r">Receitas</button><button data-go="v">Vídeos</button><button data-go="c">O Caso</button><button data-go="base">Massa-base</button><button data-go="a" data-adm hidden>Admin</button><button data-go="out" data-adm hidden>Sair</button><button data-go="l">Login</button></div>
+<div class="eb">// delegacia do glacê // divisão de donuts criminais //</div>
+<h1 class="ht">DONUTS DO <em>CRIME</em></h1>
+<p class="hs">Dez casos. Dez sabores. Nenhum inocente.</p>
+</header>
+<nav class="tabs" aria-label="Navegação principal"><button class="tbtn on" data-t="e">Evidências</button><button class="tbtn" data-t="r">Receitas</button><button class="tbtn" data-t="v">Vídeos</button><button class="tbtn" data-t="c">O Caso</button><button class="tbtn" data-t="a" data-adm hidden>Admin</button></nav>
+<main style="flex:1;min-height:0;display:flex;flex-direction:column">
+<div class="panel on" id="pnl-e">
+<section id="home" aria-label="Sala de evidências">
+<div id="hint">Mova o mouse ou arraste. Clique em um donut para abrir o caso.</div>
+<div class="band disp" aria-hidden="true">CENA DO CRIME · NÃO ULTRAPASSE · CENA DO CRIME · NÃO ULTRAPASSE · CENA DO CRIME · NÃO ULTRAPASSE · CENA DO CRIME</div>
+<div id="lbl"><b class="disp"></b><span></span></div>
+</section>
+<section id="case" aria-live="polite"><div class="info"></div><div class="hero"><div></div></div><nav class="dots" aria-label="Casos"></nav></section>
+<button id="back" class="disp">← Sala de evidências</button>
+</div>
+<div class="panel" id="pnl-r"></div>
+<div class="panel" id="pnl-v"></div>
+<div class="panel" id="pnl-a"></div>
+<div class="panel" id="pnl-l"><div class="wrap"><h2 class="disp pt">Login da delegacia</h2><p class="dim">Área restrita aos administradores.</p><label>Usuário<input id="lu" autocomplete="username"></label><label>Senha<input id="lp" type="password" autocomplete="current-password"></label><button class="lk" id="lg">Entrar</button> <span id="lm" class="dim"></span></div></div>
+<div class="panel" id="pnl-c"><div class="wrap">
+<h2 class="disp pt">O Caso</h2>
+<p>Esta delegacia investiga dez donuts. Cada um chegou com uma história, um suspeito e uma única evidência: o sabor.</p>
+<h3 class="disp">Como investigar</h3>
+<ol><li>Na aba Evidências, passe o mouse sobre a fileira e escolha um donut.</li><li>Clique para abrir o dossiê com a história e o veredito.</li><li>Troque para Receita e reproduza o crime na sua cozinha.</li></ol>
+<h3 class="disp">Sobre o projeto</h3>
+<p>Produto criado do zero: donuts autorais com narrativa de investigação criminal. Todas as receitas partem da mesma massa-base, que você encontra na aba Receitas.</p>
+</div></div>
+</main>
+<script>
+const D=[
+{n:"Mancha Carmesim",tag:"Morango · granulado",d:"Massa fofinha com glacê de morango e granulado, que parece respingo em cena de crime.",s:"A primeira mancha apareceu no balcão às 3h da manhã. Era morango, mas ninguém na delegacia teve coragem de provar para ter certeza.",v:"Evidência apreendida e comida.",g:"#e63462",a:"#fff",t:"sprinkles",bg:"#3a0a17",
+i:"Glacê: 150 g de açúcar de confeiteiro|3 colheres (sopa) de purê de morango|1 colher (chá) de suco de limão|Granulado vermelho, branco e preto",
+p:"Misture açúcar, purê e limão até ficar liso e brilhante.|Mergulhe só o topo de cada donut morno.|Cubra com o granulado antes de o glacê secar.|Deixe firmar por 10 minutos."},
+{n:"Cena do Crime Nº 13",tag:"Brigadeiro · fita amarela",d:"Cobertura de brigadeiro sobre massa dourada, cercada por fita de isolamento em glacê amarelo.",s:"O treze sempre dá azar. A fita cercava um único prato e, dentro dele, só uma marca de dedo no chocolate.",v:"Local isolado. Ninguém sai sem provar.",g:"#3a2216",a:"#e8b90f",t:"tape",bg:"#14171d",
+i:"1 lata de leite condensado|2 colheres (sopa) de cacau|1 colher (sopa) de manteiga|Glacê de limão amarelo para a fita",
+p:"Cozinhe leite condensado, cacau e manteiga até desgrudar do fundo.|Espere 5 minutos e espalhe sobre os donuts.|Desenhe duas tiras de glacê amarelo em X.|Deixe secar antes de empilhar."},
+{n:"Digital Sangrenta",tag:"Baunilha · calda de cereja",d:"Glacê de baunilha com linhas de calda de cereja desenhando uma impressão digital.",s:"Foi achada na maçaneta, vermelha e ainda úmida. O dono tinha cobertura nos dedos e um álibi esfarelado.",v:"Identificado pela digital.",g:"#efe3cc",a:"#8e0f22",t:"print",bg:"#1f2a38",
+i:"Glacê: 150 g de açúcar de confeiteiro|2 colheres (sopa) de leite|1 colher (chá) de baunilha|40 g de calda de cereja bem espessa",
+p:"Prepare o glacê de baunilha e cubra os donuts.|Ponha a calda de cereja em um saquinho com furo mínimo.|Desenhe círculos concêntricos, do centro para fora.|Passe um palito do centro à borda para marcar as linhas."},
+{n:"Veneno Verde",tag:"Matcha · gergelim preto",d:"Glacê de matcha com gergelim preto: amargo no ponto e verde demais para ser inocente.",s:"A vítima tomou o chá das cinco e não chegou às seis. A xícara estava vazia, mas o donut ao lado ainda tinha o cheiro.",v:"Envenenamento por sabor.",g:"#7fae4f",a:"#151515",t:"sesame",bg:"#0a2a20",
+i:"Glacê: 150 g de açúcar de confeiteiro|1 colher (sopa) de matcha|3 colheres (sopa) de leite|Gergelim preto",
+p:"Peneire o matcha com o açúcar para não empelotar.|Junte o leite aos poucos, até o ponto de fita.|Banhe os donuts e polvilhe o gergelim.|Sirva em até 2 horas, antes de o verde perder força."},
+{n:"Ferida Aberta",tag:"Pistache · recheio de framboesa",d:"Cobertura de pistache com recheio de framboesa que escorre ao primeiro corte.",s:"O corte foi fundo e o vermelho escorreu devagar sobre o verde. A arma nunca apareceu, só um garfo limpo demais.",v:"Corte limpo, recheio abundante.",g:"#a9cf7c",a:"#c4122f",t:"dots",bg:"#1a2610",
+i:"Recheio: 200 g de geleia de framboesa|Glacê: 150 g de açúcar de confeiteiro|2 colheres (sopa) de pasta de pistache|2 colheres (sopa) de leite|Pistache picado",
+p:"Com um bico, injete a geleia pela lateral do donut frio.|Misture pasta de pistache, açúcar e leite.|Cubra o topo e pingue pontos de geleia.|Finalize com pistache picado."},
+{n:"Olhos da Testemunha",tag:"Creme · mirtilo",d:"Donut recheado de creme, com glacê de mirtilo e pérolas que parecem olhos vigiando.",s:"Viu tudo e jurou não ter visto nada. Os olhos dela ainda seguem quem passa pela vitrine.",v:"Testemunha protegida. Olhos bem abertos.",g:"#4c5bd0",a:"#fff",t:"eye",bg:"#0c1030",
+i:"Creme: 300 ml de leite, 3 gemas, 60 g de açúcar, 25 g de amido|Glacê: 150 g de açúcar|3 colheres (sopa) de geleia de mirtilo|Pérolas brancas comestíveis",
+p:"Cozinhe leite, gemas, açúcar e amido até engrossar. Esfrie com filme em contato.|Injete o creme no donut.|Cubra com o glacê de mirtilo.|Cole as pérolas e pinte a pupila com chocolate."},
+{n:"Confissão às Três",tag:"Café · grãos de chocolate",d:"Glacê de café com canela e grãos de chocolate, forte como uma noite inteira de interrogatório.",s:"Três horas, uma lâmpada e nenhuma janela. O suspeito só abriu a boca quando sentiu o cheiro de café.",v:"Confessou no terceiro gole.",g:"#5e3d27",a:"#1d0f08",t:"beans",bg:"#24150a",
+i:"Glacê: 150 g de açúcar|3 colheres (sopa) de café forte e frio|1 colher (chá) de canela|Grãos de chocolate",
+p:"Misture café e açúcar até ficar cremoso.|Junte a canela e mexa uma última vez.|Banhe os donuts e distribua os grãos.|Sirva com café preto."},
+{n:"Sangue Frio",tag:"Red velvet · cream cheese",d:"Massa red velvet com cobertura branca de cream cheese e calda de cereja escorrendo como sangue.",s:"Sem testemunhas, sem pistas, só um rastro vermelho descendo devagar pelo branco. Quem fez isso não tremeu.",v:"Frio, calculado e delicioso.",c:"#8c1c2a",g:"#f4ece3",a:"#b00f26",t:"drip",bg:"#2a040a",
+i:"Massa: troque 2 colheres (sopa) de farinha por cacau e junte corante vermelho|Cobertura: 100 g de cream cheese, 100 g de açúcar, 1 colher (sopa) de leite|Calda de cereja",
+p:"Prepare a massa-base com cacau e corante.|Bata cream cheese, açúcar e leite.|Cubra os donuts já frios.|Pingue a calda de cereja em gotas escorrendo."},
+{n:"Cofre do Mafioso",tag:"Doce de leite · flor de sal",d:"Recheio e cobertura de doce de leite com flor de sal, valiosos como o que se guarda num cofre.",s:"O chefe guardava um segredo e três quilos de doce de leite. Quando abriram o cofre, só restavam o cheiro e o sal no chão.",v:"Cofre arrombado, nada sobrou.",g:"#b87a33",a:"#fff",t:"salt",bg:"#2b1805",
+i:"Recheio: 250 g de doce de leite|Cobertura: 100 g de doce de leite|2 colheres (sopa) de creme de leite|Flocos de sal",
+p:"Aqueça doce de leite e creme de leite até escorrer.|Recheie os donuts com doce de leite firme.|Cubra o topo com a calda morna.|Finalize com flocos de sal."},
+{n:"Corpo no Lago",tag:"Amora · lavanda",d:"Glacê de amora com lavanda e cacau, num tom arroxeado de quem passou a noite na água.",s:"Foi achado de manhã, roxo e coberto de cacau, flutuando perto do cais. A lavanda tentou disfarçar o cheiro.",v:"Caso reaberto.",g:"#7d6aa6",a:"#2a1f3d",t:"dust",bg:"#17122b",
+i:"Glacê: 150 g de açúcar|3 colheres (sopa) de purê de amora|1 colher (chá) de lavanda culinária|Cacau em pó",
+p:"Infuse a lavanda no purê morno e coe.|Misture ao açúcar até ficar liso.|Cubra os donuts e deixe secar.|Peneire cacau por cima."}
+];
+D.forEach(d=>{d.i=d.i.split('|').join('\n');d.p=d.p.split('|').join('\n');d.video='';d.photos=[]});
+let BASE="500 g de farinha, 60 g de açúcar, 10 g de sal, 7 g de fermento biológico seco, 250 ml de leite morno, 2 ovos, 60 g de manteiga. Sove por 10 minutos e deixe crescer 1 hora. Abra com 1,5 cm, corte discos com furo e descanse 30 minutos. Frite a 175 °C por 1 min 30 de cada lado, ou asse a 180 °C por 12 minutos.";
+const $=s=>document.querySelector(s);
+const esc=x=>String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const q=(x,f)=>/^#[0-9a-f]{6}$/i.test(x)?x:f;
+const L=x=>String(x||'').split('\n').map(z=>z.trim()).filter(Boolean);
+const ph=d=>Array.isArray(d.photos)?d.photos:[];
+const okU=u=>/^(\/_blob\/|https:\/\/)/.test(u||'');
+const mi=u=>okU(u)?`<img loading="lazy" alt="Foto do produto" src="${esc(u)}">`:'';
+const mv=u=>!u?'<p class="dim">O vídeo desta receita ainda não foi publicado.</p>':!okU(u)?'':/^\/_blob\/|\.(mp4|webm|mov)(\?|$)/i.test(u)?`<video controls preload="metadata" playsinline src="${esc(u)}"></video>`:`<a class="lk" target="_blank" rel="noopener" href="${esc(u)}">Assistir ao vídeo ↗</a>`;
+const rng=s=>()=>(s=s*16807%2147483647)/2147483647;
+const C=r=>`M${100-r} 100a${r} ${r} 0 1 0 ${2*r} 0a${r} ${r} 0 1 0 ${-2*r} 0`;
+function gp(k){const R=rng(k*7+3),p=[];for(let i=0;i<48;i++){const a=i/48*6.2832,r=77+Math.sin(a*5+k)*3+R()*3;p.push((100+r*Math.cos(a)).toFixed(1)+' '+(100+r*Math.sin(a)).toFixed(1))}return'M'+p.join('L')+'Z'}
+function donut(d,k,P){
+ const R=rng(k*97+11),a=q(d.a,'#fff'),t=d.t,id=P+k;let s='';
+ const pt=(r0,r1)=>{const an=R()*6.283,r=r0+R()*(r1-r0);return[100+r*Math.cos(an),100+r*Math.sin(an)]};
+ if(t=='sprinkles'||t=='dust')for(let i=0;i<48;i++){const[x,y]=pt(40,74);s+=`<rect x="${x}" y="${y}" width="${t=='dust'?3:9}" height="3" rx="1.5" fill="${t=='dust'?a:['#fff','#c1122f','#ff5470','#1a1a1a','#f1d4da'][i%5]}" transform="rotate(${R()*180} ${x} ${y})"/>`}
+ if(t=='sesame')for(let i=0;i<60;i++){const[x,y]=pt(40,74);s+=`<ellipse cx="${x}" cy="${y}" rx="3" ry="1.8" fill="${a}" transform="rotate(${R()*180} ${x} ${y})"/>`}
+ if(t=='beans')for(let i=0;i<14;i++){const[x,y]=pt(44,70);s+=`<g transform="rotate(${R()*180} ${x} ${y})"><ellipse cx="${x}" cy="${y}" rx="7" ry="4.4" fill="${a}"/><path d="M${x-6} ${y}h12" stroke="#fff3" stroke-width="1"/></g>`}
+ if(t=='salt')for(let i=0;i<34;i++){const[x,y]=pt(40,74);s+=`<rect x="${x}" y="${y}" width="3.5" height="3.5" fill="#fff" transform="rotate(${R()*90} ${x} ${y})"/>`}
+ if(t=='dots'||t=='eye')for(let i=0;i<8;i++){const an=i/8*6.283,x=100+58*Math.cos(an),y=100+58*Math.sin(an);s+=t=='eye'?`<circle cx="${x}" cy="${y}" r="9" fill="#fff"/><circle cx="${x}" cy="${y}" r="4.5" fill="#111"/>`:`<circle cx="${x}" cy="${y}" r="6" fill="${a}"/><circle cx="${x-2}" cy="${y-2}" r="1.8" fill="#fff8"/>`}
+ if(t=='print')for(let i=0;i<5;i++)s+=`<circle cx="100" cy="100" r="${40+i*7}" fill="none" stroke="${a}" stroke-width="2.4" stroke-dasharray="${40+i*9} ${5+i*2} 12 6" transform="rotate(${i*37} 100 100)"/>`;
+ if(t=='drip')s+=`<circle cx="100" cy="100" r="47" fill="none" stroke="${a}" stroke-width="10" stroke-dasharray="14 7 26 9 10 6" stroke-linecap="round"/><circle cx="100" cy="100" r="62" fill="none" stroke="${a}" stroke-width="5" stroke-dasharray="6 20 12 30" stroke-linecap="round"/>`;
+ if(t=='tape')s+=`<defs><clipPath id="c${id}"><path clip-rule="evenodd" d="${gp(k)+C(34)}"/></clipPath><pattern id="p${id}" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="14" fill="#111"/></pattern></defs><g clip-path="url(#c${id})">${[35,-35].map(r=>`<g transform="rotate(${r} 100 100)"><rect x="0" y="87" width="200" height="26" fill="${a}"/><rect x="0" y="87" width="200" height="26" fill="url(#p${id})" opacity=".85"/></g>`).join('')}</g>`;
+ return`<svg viewBox="0 0 200 200" role="img" aria-label="Donut ${esc(d.n)}"><path fill-rule="evenodd" fill="${q(d.c,'#e0a45a')}" d="${C(92)+C(30)}"/><path fill-rule="evenodd" fill="#0003" d="${C(34)+C(28)}"/><path fill-rule="evenodd" fill="${q(d.g,'#ccc')}" d="${gp(k)+C(34)}"/><path d="M34 78A68 68 0 0 1 76 36" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="6" stroke-linecap="round"/>${s}</svg>`}
+const pad=n=>String(n+1).padStart(3,'0');
+const home=$('#home'),cs=$('#case'),N=D.length;
+const items=D.map((d,i)=>{const e=document.createElement('div');e.className='it';e.tabIndex=0;e.setAttribute('role','button');e.setAttribute('aria-label','Abrir caso: '+d.n);e.innerHTML=donut(d,i,'i');e.onclick=()=>{if(moved<8)open(i)};e.onkeydown=ev=>{if(ev.key=='Enter')open(i)};home.appendChild(e);return e});
+let cur=4.5,tg=4.5,mode='home',idx=0,moved=0,down=null,near=-1;
+function lbl(i){if(i==near)return;near=i;$('#lbl b').textContent=D[i].n;$('#lbl span').textContent='Caso '+pad(i)+' · '+D[i].tag}
+function frame(t){cur+=(tg-cur)*.08;const W=innerWidth,gap=Math.min(W/4,250);
+ items.forEach((e,i)=>{const o=i-cur,ab=Math.abs(o);e.style.transform=`translate3d(${W/2+o*gap}px,${Math.sin(t/900+i)*9}px,0) perspective(800px) rotateX(52deg) rotateZ(${o*9+Math.sin(t/1500+i)*4}deg) scale(${Math.max(.5,1.35-ab*.3)})`;e.style.zIndex=100-Math.round(ab*10);e.style.opacity=Math.max(.3,1-ab*.17)});
+ lbl(Math.max(0,Math.min(N-1,Math.round(cur))));requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+home.addEventListener('pointermove',e=>{if(e.pointerType=='mouse')tg=Math.max(0,Math.min(N-1,e.clientX/innerWidth*(N-1)));else if(down){moved=Math.abs(e.clientX-down.x);tg=Math.max(0,Math.min(N-1,down.t-(e.clientX-down.x)/Math.min(innerWidth/4,250)))}});
+home.addEventListener('pointerdown',e=>{moved=0;down={x:e.clientX,t:tg}});
+addEventListener('pointerup',()=>{down=null;setTimeout(()=>moved=0,0)});
+const dots=$('.dots');
+D.forEach((d,i)=>{const b=document.createElement('button');b.setAttribute('aria-label',d.n);b.title=d.n;b.onclick=()=>show(i);dots.appendChild(b)});
+let ct='d';
+function show(i,keep){idx=(i+N)%N;const d=D[idx];cs.style.backgroundColor=q(d.bg,'#222');
+ const h=$('.hero');h.firstElementChild.innerHTML=donut(d,idx,'h');if(!keep){h.classList.remove('swap');void h.offsetWidth;h.classList.add('swap')}
+ const inf=$('.info');if(!keep){inf.style.animation='none';void inf.offsetWidth;inf.style.animation=''}
+ const T=[['d','Dossiê'],['g','Ingredientes'],['r','Receita'],['v','Vídeo'],['f','Fotos']],F=ph(d);
+ const P={d:`<p>${esc(d.d)}</p><h3 class="disp">História</h3><p>${esc(d.s)}</p><p class="verd"><b>Veredito:</b> ${esc(d.v)}</p>`,
+ g:`<ul>${L(d.i).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`,
+ r:`<ol>${L(d.p).map(x=>`<li>${esc(x)}</li>`).join('')}</ol><details><summary>Massa-base (vale para os 10 casos)</summary><p>${esc(BASE)}</p></details>`,
+ v:mv(d.video),f:F.length?`<div class="gal">${F.map(mi).join('')}</div>`:'<p class="dim">Ainda não há fotos deste produto.</p>'};
+ inf.innerHTML=`<span>Caso ${pad(idx)}</span><h2 class="disp">${esc(d.n)}</h2><p class="sub">${esc(d.tag)}</p><div class="tabs" role="tablist">${T.map(([k,l])=>`<button role="tab" aria-selected="${k==ct}" data-p="${k}">${l}</button>`).join('')}</div>${T.map(([k])=>`<div class="pan${k==ct?' on':''}" id="pn-${k}">${P[k]}</div>`).join('')}`;
+ inf.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{ct=b.dataset.p;inf.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x==b));inf.querySelectorAll('.pan').forEach(p=>p.classList.toggle('on',p.id=='pn-'+ct))});
+ dots.querySelectorAll('button').forEach((b,j)=>b.setAttribute('aria-current',j==idx));if(!keep)inf.scrollTop=0}
+function open(i){mode='case';show(i);home.classList.add('off');cs.classList.add('on')}
+function close(){mode='home';tg=cur=idx;home.classList.remove('off');cs.classList.remove('on')}
+$('#back').onclick=close;
+let wl=0;cs.addEventListener('wheel',e=>{if(e.target.closest('.info')&&$('.info').scrollHeight>$('.info').clientHeight)return;const n=Date.now();if(n-wl>700&&Math.abs(e.deltaY)>10){wl=n;show(idx+(e.deltaY>0?1:-1))}},{passive:true});
+addEventListener('keydown',e=>{if(!$('#pnl-e').classList.contains('on'))return;const f=e.key=='ArrowDown'||e.key=='ArrowRight',b=e.key=='ArrowUp'||e.key=='ArrowLeft';
+ if(mode=='case'){if(e.key=='Escape')close();else if(f)show(idx+1);else if(b)show(idx-1)}
+ else{if(f)tg=Math.min(N-1,Math.round(tg)+1);if(b)tg=Math.max(0,Math.round(tg)-1);if(e.key=='Enter'&&document.activeElement==document.body)open(Math.round(tg))}});
+
+function go(t){document.querySelectorAll('.tbtn').forEach(b=>b.classList.toggle('on',b.dataset.t==t));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id=='pnl-'+t));if(t=='a')adm();$('#hm').classList.remove('open')}
+document.querySelectorAll('.tbtn').forEach(b=>b.onclick=()=>go(b.dataset.t));
+$('#hbtn').onclick=e=>{e.stopPropagation();$('#hm').classList.toggle('open')};
+document.addEventListener('click',()=>$('#hm').classList.remove('open'));
+document.querySelectorAll('#hm button').forEach(b=>b.onclick=()=>{if(b.dataset.go=='base'){go('r');$('#base').open=true;$('#base').scrollIntoView()}else if(b.dataset.go=='out')logout();else go(b.dataset.go)});
+function rp(){$('#pnl-r').innerHTML='<div class="wrap"><h2 class="disp pt">Receitas</h2><details id="base" class="rc"><summary><b class="disp">Massa-base · vale para os 10 casos</b></summary><p>'+esc(BASE)+'</p></details>'+D.map((d,i)=>`<details class="rc"><summary><span class="th">${donut(d,i,'r')}</span><span><b class="disp">${esc(d.n)}</b><small>Caso ${pad(i)} · ${esc(d.tag)}</small></span></summary><ul>${L(d.i).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><ol>${L(d.p).map(x=>`<li>${esc(x)}</li>`).join('')}</ol><button class="lk" data-open="${i}">Abrir dossiê</button></details>`).join('')+'</div>'}
+function rv(){$('#pnl-v').innerHTML='<div class="wrap"><h2 class="disp pt">Vídeos das receitas</h2>'+D.map((d,i)=>`<section class="rc"><b class="disp">${esc(d.n)}</b> <small>Caso ${pad(i)}</small>${mv(d.video)}</section>`).join('')+'</div>'}
+$('#pnl-r').onclick=e=>{const b=e.target.closest('.lk[data-open]');if(b){go('e');open(+b.dataset.open)}};
+function refresh(){items.forEach((e,i)=>{e.innerHTML=donut(D[i],i,'i');e.setAttribute('aria-label','Abrir caso: '+D[i].n)});dots.querySelectorAll('button').forEach((b,i)=>{b.title=D[i].n;b.setAttribute('aria-label',D[i].n)});near=-1;rp();rv();if(cs.classList.contains('on'))show(idx,true)}
+refresh();
+/* ===== BANCO DE DADOS + ADMIN ===== */
+let DB=null,AS=null,ai=0;
+const KEYS=['n','tag','d','s','v','i','p','video','photos','bg','g','a','t','c'];
+const FD=[['n','Nome do caso','i'],['tag','Sabor (subtítulo)','i'],['d','Descrição do produto','t'],['s','História do crime','t'],['v','Veredito','i'],['i','Ingredientes (um por linha)','t'],['p','Modo de preparo (um passo por linha)','t'],['video','Link do vídeo da receita (YouTube, Drive, etc.)','i']];
+function adm(){const d=D[ai];$('#pnl-a').innerHTML=`<div class="wrap"><h2 class="disp pt">Painel da delegacia</h2><p class="dim">${DB?'<b>Banco de dados conectado.</b> ':'<b>Banco de dados desconectado.</b> Abra o site pelo link publicado no claude.ai, logada(o) na sua conta, e não pelo arquivo baixado. '}Tudo que você salvar aparece na hora para quem estiver com o site aberto.</p>
+<label>Caso<select id="as">${D.map((x,i)=>`<option value="${i}"${i==ai?' selected':''}>${pad(i)} · ${esc(x.n)}</option>`).join('')}</select></label>
+${FD.map(([k,l,t])=>`<label>${l}${t=='t'?`<textarea id="f-${k}">${esc(d[k])}</textarea>`:`<input id="f-${k}" value="${esc(d[k])}">`}</label>`).join('')}
+<label>Cor do fundo <input type="color" id="c-bg" value="${q(d.bg,'#222222')}"></label>
+<label>Cor da cobertura <input type="color" id="c-g" value="${q(d.g,'#cccccc')}"></label>
+<label>Cor do detalhe <input type="color" id="c-a" value="${q(d.a,'#ffffff')}"></label>
+<label>Decoração <select id="c-t">${['sprinkles','tape','print','sesame','dots','eye','beans','drip','salt','dust','none'].map(x=>`<option${x==d.t?' selected':''}>${x}</option>`).join('')}</select></label>
+${AS?`<label>Enviar vídeo (até 20 MB) <input type="file" id="up-v" accept="video/*"></label><label>Enviar fotos do produto <input type="file" id="up-p" accept="image/*" multiple></label>`:'<p class="dim">Envio de arquivos indisponível para este usuário.</p>'}
+<div class="gal">${ph(d).map((u,j)=>`<span class="ph">${mi(u)}<button data-rm="${j}" aria-label="Remover foto">✕</button></span>`).join('')}</div>
+<button class="lk" id="sv">Salvar caso</button> <span id="am" class="dim"></span>
+<h3 class="disp">Massa-base</h3><textarea id="bt">${esc(BASE)}</textarea><button class="lk" id="sb">Salvar massa-base</button></div>`}
+const msg=t=>{const e=$('#am');if(e)e.textContent=t};
+async function save(){if(!DB)return msg('Sem conexão com o banco de dados. Abra pelo link publicado no claude.ai, logada(o), e recarregue a página.');const d=D[ai];FD.forEach(([k])=>d[k]=$('#f-'+k).value);['bg','g','a'].forEach(k=>d[k]=$('#c-'+k).value);d.t=$('#c-t').value;
+ const o={};KEYS.forEach(k=>{if(d[k]!==undefined)o[k]=d[k]});
+ try{await DB.collection('donuts').doc('d'+ai).set(o);refresh();msg('Salvo.')}catch(e){msg('Não foi possível salvar. Se for erro de permissão, o dono do site precisa liberar acesso de colaborador para você. ('+(e.code||e.message)+')')}}
+async function up(f){const r=await AS.upload(f);return '/_blob/'+r.id}
+$('#pnl-a').addEventListener('change',async e=>{const t=e.target;
+ if(t.id=='as'){ai=+t.value;adm()}
+ else if(t.id=='up-v'&&t.files[0]){try{msg('Enviando vídeo...');D[ai].video=await up(t.files[0]);await save();adm()}catch(x){msg('Erro no envio: '+(x.message||x.code))}}
+ else if(t.id=='up-p'&&t.files.length){try{msg('Enviando fotos...');const d=D[ai];d.photos=ph(d).slice();for(const f of t.files)d.photos.push(await up(f));await save();adm()}catch(x){msg('Erro no envio: '+(x.message||x.code))}}});
+$('#pnl-a').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
+ if(b.id=='sv')save();
+ else if(b.id=='sb'&&DB){BASE=$('#bt').value;try{await DB.collection('cfg').doc('base').set({t:BASE});refresh();msg('Massa-base salva.')}catch(x){msg('Erro: '+(x.message||x.code))}}
+ else if(b.dataset.rm!==undefined){const d=D[ai];d.photos=ph(d).filter((_,j)=>j!=+b.dataset.rm);await save();adm()}});
+function live(db){db.collection('donuts').onSnapshot(sn=>{sn.docs.forEach(x=>{const i=+String(x.id).slice(1),v=x.data();if(D[i]&&v)Object.assign(D[i],v)});refresh()},()=>{});
+ db.collection('cfg').doc('base').onSnapshot(x=>{const v=x.data();if(v&&v.t){BASE=String(v.t);refresh()}},()=>{})}
+if(window.claude&&claude.use){
+ claude.use('db').then(db=>{if(db){DB=db;live(db)}}).catch(()=>{});
+ claude.use('assets').then(a=>{AS=a}).catch(()=>{});
+}
+
+/* ===== LOGIN ===== */
+const ADMS={veiga:"31ad9e480b0dbfe63cfe03a7b29fe1fa8ee7202010c569ad13232a21104483f2",theo:"b7b6ba3fbfe5a7aaa04ea00fe356e0c14860efb6811e13949ae4ad7a7c7b8630"};
+async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function setAdm(on){document.querySelectorAll('[data-adm]').forEach(e=>e.hidden=!on);$('#hm [data-go=l]').hidden=on}
+async function login(){const u=$('#lu').value.trim().toLowerCase(),pw=$('#lp').value;let ok=false;
+ try{ok=!!ADMS[u]&&ADMS[u]===await sha('donut:'+u+':'+pw)}catch(e){}
+ if(ok){try{sessionStorage.setItem('adm',u)}catch(e){}setAdm(true);$('#lp').value='';$('#lm').textContent='';go('a')}
+ else $('#lm').textContent='Usuário ou senha incorretos.'}
+function logout(){try{sessionStorage.removeItem('adm')}catch(e){}setAdm(false);go('e')}
+$('#lg').onclick=login;$('#lp').onkeydown=e=>{if(e.key=='Enter')login()};
+try{if(ADMS[sessionStorage.getItem('adm')])setAdm(true)}catch(e){}
+</script></body></html>
